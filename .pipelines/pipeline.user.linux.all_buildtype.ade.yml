@@ -23,3 +23,10 @@ build:
         - from: 'VMEncryption'
           include:
             - 'dist/*.zip'
+test:
+  commands:
+    - !!testcommand
+      name: 'ADE Unittesting'
+      command: 'VMEncryption/cdpx_unittest.sh'
+      fail_on_stderr: true
+    
