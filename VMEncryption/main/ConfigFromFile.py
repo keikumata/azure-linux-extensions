@@ -25,7 +25,7 @@ def get_config_value_from_file(file_name):
         raise IOError('Unexpected: version.txt file cannot be found at [%s]' % file_path)
     
     with open(file_path) as text_file:
-        return text_file.read()
+        return text_file.read().strip()
 
 def get_build_version():
     return get_config_value_from_file('version.txt')
