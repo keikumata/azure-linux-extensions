@@ -1,7 +1,4 @@
 #!/bin/bash
-
-apt-get install -y virtualenv
-
 cd /source/VMEncryption
 
 python -m virtualenv ./env
