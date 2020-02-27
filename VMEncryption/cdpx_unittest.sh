@@ -1,7 +1,7 @@
 #!/bin/bash
 cd /source/VMEncryption
 
-python -m virtualenv ./env
+python2 -m virtualenv ./env
 . env/bin/activate
 pip install -r requirements.txt
-python -m unittest test.test_check_utils
+python2 -m unittest test.test_check_utils
