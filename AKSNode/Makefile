@@ -25,8 +25,8 @@ define make-extension-zip
 	$(eval VERSION = $(shell grep -oP "(?<=<Version>)[^<]+" manifest.xml))
 
 	@echo "Building '$(NAME)-$(VERSION).zip' ..."
-	find . -type f | grep -v "/test/" | grep -v "./references" | zip -9 -@ build/$(NAME)-$(VERSION).zip > /dev/null
-	@find ../Utils    -type f | grep -v "/test/"                | zip -9 -@ build/$(NAME)-$(VERSION).zip > /dev/null
+	find . -type f | grep -v "./references" | zip -9 -@ build/$(NAME)-$(VERSION).zip > /dev/null
+	@find ../Utils    -type f               | zip -9 -@ build/$(NAME)-$(VERSION).zip > /dev/null
 endef
 
 .PHONY: package

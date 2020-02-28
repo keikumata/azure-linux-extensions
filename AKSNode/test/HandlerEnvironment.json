@@ -1,0 +1,13 @@
+[
+    {
+        "name": "Microsoft.AKS.Compute.AKS.Linux.AKSNode",
+        "seqNo": "0",
+        "version": 1.0,
+        "handlerEnvironment": {
+            "logFolder": "/root/Compute.AKS.Linux.AKSNode",
+            "configFolder": "/root/Compute.AKS.Linux.AKSNode/config",
+            "statusFolder": "/root/Compute.AKS.Linux.AKSNode/status",
+            "heartbeatFile": "/root/Compute.AKS.Linux.AKSNode/heartbeat.log"
+        }
+    }
+]
