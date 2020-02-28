@@ -186,12 +186,8 @@ def log_run_get_output(cmd, should_log=True):
     :rtype: int, str
     :return: A tuple of (subshell exit code, contents of stdout)
     """
-    if should_log:
-        self.logger("RunCmd " + cmd)
     error, msg = waagent.RunGetOutput(cmd, chk_err=should_log)
-    if should_log:
-        self.logger("Return " + str(error) + ":" + msg)
-    return int(error), self.filterNonAsciiCharacters(msg)
+    return int(error), msg
 
 
 if __name__ == '__main__' :
