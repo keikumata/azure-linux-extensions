@@ -127,7 +127,7 @@ def install(hutil):
     if code != 0 and str_ret != 0:
         raise Exception("node-problem-detector not installed.")
 
-    hutil.do_exit(0, 'Install', 'success', '0', f'Successfully installed {ExtensionShortName} extension')
+    hutil.do_exit(0, 'Install', 'success', '0', 'Successfully installed ' + ExtensionShortName + ' extension')
 
 
 def enable(hutil):
