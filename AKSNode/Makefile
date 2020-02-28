@@ -21,8 +21,8 @@ clean:
 	rm -rf build
 
 define make-extension-zip
-	$(eval NAME    = $(shell grep -oP "(?<=<Type>)[^<]+" $@/manifest.xml))
-	$(eval VERSION = $(shell grep -oP "(?<=<Version>)[^<]+" $@/manifest.xml))
+	$(eval NAME    = $(shell grep -oP "(?<=<Type>)[^<]+" manifest.xml))
+	$(eval VERSION = $(shell grep -oP "(?<=<Version>)[^<]+" manifest.xml))
 
 	@echo "Building '$(NAME)-$(VERSION).zip' ..."
 	find . -type f | grep -v "/test/" | grep -v "./references" | zip -9 -@ build/$(NAME)-$(VERSION).zip > /dev/null
