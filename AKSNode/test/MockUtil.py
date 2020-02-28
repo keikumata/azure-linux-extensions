@@ -37,3 +37,6 @@ class MockUtil:
 
     def do_exit(self,exit_code,operation,status,code,message):
         self.test.assertNotEqual(None, message)
+
+    def exit_if_enabled(self, remove_protected_settings=False):
+        pass
