@@ -19,6 +19,8 @@ class TestInstall(unittest.TestCase):
 
     def test_install(self):
         hutil = MockUtil(self)
+        waagent.LoggerInit('/var/log/waagent.log','/dev/stdout')
+        waagent.Log("{0} started to handle.".format("TestExtension"))
         ep.RunGetOutput = waagent.RunGetOutput
         ep.install(hutil)
 
