@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+import sys
+sys.path.append('..')
+
 import unittest
 import os
 import zipfile
