@@ -108,7 +108,7 @@ def install(hutil):
             raise Exception("Removing node-problem-detector for re-installation failed.")
 
     # 2. Install node problem detector
-    code, _ = RunGetOutput("dpkg -i /deb/node-problem-detector/*.deb")
+    code, _ = RunGetOutput("dpkg -i deb/node-problem-detector/*.deb")
     if code != 0:
         raise Exception("Installing node-problem-detector failed.")
 
