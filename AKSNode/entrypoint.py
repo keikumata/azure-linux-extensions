@@ -106,26 +106,36 @@ def install(hutil):
         code, str_ret = RunGetOutput("dpkg --remove node-problem-detector")
         if code != 0:
             raise Exception("Removing node-problem-detector for re-installation failed.")
+        else:
+            hutil.log("Node Problem Detector successfully uninstalled")
 
     # 2. Install node problem detector
     code, _ = RunGetOutput("dpkg -i deb/node-problem-detector/*.deb")
     if code != 0:
         raise Exception("Installing node-problem-detector failed.")
+    else:
+        hutil.log("Node Problem Detector successfully installed")
 
     # 3. Copy over custom configurations from config folder into /etc/node-problem.detector.d
     code, _ = RunGetOutput("cp -a config/node-problem-detector/. /etc/node-problem.detector.d/")
     if code != 0:
         raise Exception("Copying node-problem-detector configs to systemd config folder failed.")
+    else:
+        hutil.log("Node Problem Detector configurations copied over")
 
     # 4. Ensure all custom plugin scripts are executable
     code, _ = RunGetOutput("chmod +x /etc/node-problem-detector.d/plugin/*")
     if code != 0:
         raise Exception("Applying chmod to custom plugin scripts failed")
+    else:
+        hutil.log("Node Problem Detector custom plugins are executable")
 
     # 5. Check if node-problem-detector is installed correctly
     code, str_ret = RunGetOutput("echo $(dpkg-query -W -f='${Status}' node-problem-detector 2>/dev/null | grep -c 'ok installed')")
     if code != 0 and str_ret != 0:
         raise Exception("node-problem-detector not installed.")
+    else:
+        hutil.log("Node Problem Detector verified to be installed")
 
     hutil.do_exit(0, 'Install', 'success', '0', 'Successfully installed ' + ExtensionShortName + ' extension')
 
