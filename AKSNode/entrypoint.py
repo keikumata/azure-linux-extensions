@@ -294,8 +294,31 @@ def uninstall(hutil):
     """
     hutil.exit_if_enabled()
 
-    # Check if node-problem-detector is installed
-    # Uninstall node-problem-detector
+    # 1. Check if node-problem-detector is installed
+    code, str_ret = RunGetOutput("echo $(dpkg-query -W -f='${Status}' node-problem-detector 2>/dev/null | grep -c 'ok installed')")
+    if code == 0 and str_ret == 0:
+        raise Exception("Node Problem Detector not installed.")
+    else:
+        hutil.log("Node Problem Detector verified to be installed")
+
+    # 2. Delete configs
+    code, _ = RunGetOutput("rm -rf /etc/node-problem-detector.d")
+    if code != 0:
+        raise Exception("Node Problem Detector configs could not be deleted.")
+    else:
+        hutil.log("Node Problem Detector configs successfully deleted")
+
+    # 3. Uninstall debian package
+    code, _ = RunGetOutput("dpkg --purge node-problem-detector")
+    if code != 0:
+        raise Exception("Node Problem Detector could not be uninstalled.")
+    else:
+        code, str_ret = RunGetOutput("echo $(dpkg-query -W -f='${Status}' node-problem-detector 2>/dev/null | grep -c 'ok installed')")
+        if code == 0 and str_ret != 0:
+            raise Exception("Node Problem Detector still installed.")
+        else:
+            hutil.log("Node Problem Detector successfully uninstalled")
+    
 
 
 def log_run_get_output(cmd, should_log=True):
