@@ -36,4 +36,4 @@ package: init $(DEB_DIR)/$(DEB_FILES)
 	@cd ../Common/WALinuxAgent-2.0.16 && echo ./waagent | zip -9 -@ ../../AKSNode/build/$(NAME)-$(VERSION).zip > /dev/null
 
 $(DEB_DIR)/$(DEB_FILES):
-	curl -fsSL https://akspackages.blob.core.windows.net/$(@:$(DEB_DIR)/%=%) -o $@
+	curl -fsSL https://akskeiyoshi.blob.core.windows.net/$(@:$(DEB_DIR)/%=%) -o $@

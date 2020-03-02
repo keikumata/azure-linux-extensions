@@ -1,5 +1,5 @@
 {
-    "plugin": "custom-kubelet-monitor",
+    "plugin": "custom",
     "pluginConfig": {
       "invoke_interval": "30s",
       "timeout": "5s",

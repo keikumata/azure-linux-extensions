@@ -117,7 +117,7 @@ def install(hutil):
         hutil.log("Node Problem Detector successfully installed")
 
     # 3. Copy over custom configurations from config folder into /etc/node-problem.detector.d
-    code, _ = RunGetOutput("cp -a config/node-problem-detector/. /etc/node-problem.detector.d/")
+    code, _ = RunGetOutput("cp -TRv config/node-problem-detector/ /etc/node-problem-detector.d/")
     if code != 0:
         raise Exception("Copying node-problem-detector configs to systemd config folder failed.")
     else:
@@ -148,8 +148,31 @@ def enable(hutil):
     """
     hutil.exit_if_enabled()
 
-    # Check if node-problem-detector is installed
-    # Enable node problem detector
+    # 1. Check if node-problem-detector is installed
+    code, str_ret = RunGetOutput("echo $(dpkg-query -W -f='${Status}' node-problem-detector 2>/dev/null | grep -c 'ok installed')")
+    if code != 0 and str_ret != 0:
+        raise Exception("node-problem-detector not installed.")
+    else:
+        hutil.log("Node Problem Detector verified to be installed")
+    # 2. Daemon Reload
+    code, _ = RunGetOutput("systemctl daemon-reload")
+    if code != 0:
+        raise Exception("Systemctl daemon-reload was not successful")
+    else:
+        hutil.log("Systemctl daemon-reload was successful")
+    # 3. Daemon Enable
+    code, _ = RunGetOutput("systemctl enable node-problem-detector.service")
+    if code != 0:
+        raise Exception("Node Problem Detector enable was not successful")
+    else:
+        hutil.log("Node Problem Detector enable was successful")
+    # 4. Daemon Start
+    code, _ = RunGetOutput("systemctl start node-problem-detector.service")
+    if code != 0:
+        raise Exception("Node Problem Detector start was not successful")
+    else:
+        hutil.log("Node Problem Detector start was successful")
+
 
 
 def disable(hutil):
@@ -160,8 +183,18 @@ def disable(hutil):
     """
     hutil.exit_if_enabled()
 
-    # Check if node-problem-detector is installed
-    # Disable node problem detector
+    # 1. Check if node-problem-detector is installed
+    code, str_ret = RunGetOutput("echo $(dpkg-query -W -f='${Status}' node-problem-detector 2>/dev/null | grep -c 'ok installed')")
+    if code != 0 and str_ret != 0:
+        raise Exception("node-problem-detector not installed.")
+    else:
+        hutil.log("Node Problem Detector verified to be installed")
+    # 2. Enable node problem detector
+    code, _ = RunGetOutput("systemctl disable node-problem-detector")
+    if code != 0:
+        raise Exception("node-problem-detector could not be disabled.")
+    else:
+        hutil.log("Node Problem Detector was disabled")
 
 
 def update(hutil):
