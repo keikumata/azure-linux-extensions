@@ -156,7 +156,7 @@ def enable(hutil):
         hutil.log("Node Problem Detector verified to be installed")
 
     # 2. Check if already enabled - if so, just return here
-    code, _ = RunGetOutput("systemctl is-enabled node-problem-detector")
+    code, _ = RunGetOutput("systemctl is-enabled node-problem-detector", False)
     if code == 0:
         hutil.log("Node Problem Detector is already enabled")
         return
@@ -209,9 +209,9 @@ def disable(hutil):
     
     # 2. Check if already disabled and inactive - if so, just return here
     code, _ = RunGetOutput("systemctl is-enabled node-problem-detector", False)
-    if code != 1:
+    if code == 1:
         code, _ = RunGetOutput("systemctl is-active node-problem-detector", False)
-        if code != 3:
+        if code == 3:
             hutil.log("Node Problem Detector is already stopped and disabled")
             return
 
