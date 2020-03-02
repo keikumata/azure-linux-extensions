@@ -150,8 +150,8 @@ def enable(hutil):
 
     # 1. Check if node-problem-detector is installed
     code, str_ret = RunGetOutput("echo $(dpkg-query -W -f='${Status}' node-problem-detector 2>/dev/null | grep -c 'ok installed')")
-    if code != 0 and str_ret != 0:
-        raise Exception("node-problem-detector not installed.")
+    if code == 0 and str_ret == 0:
+        raise Exception("Node Problem Detector not installed.")
     else:
         hutil.log("Node Problem Detector verified to be installed")
 
@@ -196,7 +196,7 @@ def disable(hutil):
 
     # 1. Check if node problem detector is installed
     code, str_ret = RunGetOutput("echo $(dpkg-query -W -f='${Status}' node-problem-detector 2>/dev/null | grep -c 'ok installed')")
-    if code != 0 and str_ret != 0:
+    if code == 0 and str_ret == 0:
         raise Exception("Node Problem Detector not installed.")
     else:
         hutil.log("Node Problem Detector verified to be installed")
@@ -218,7 +218,7 @@ def disable(hutil):
         raise Exception("Node Problem Detector could not be disabled.")
     else:
         code, _ = RunGetOutput("systemctl is-enabled node-problem-detector", False)
-        if code != 3:
+        if code != 1:
             raise Exception("Tried to disable Node Problem Detector but is still enabled, or command failed")
         else:
             hutil.log("Node Problem Detector was successfully disabled")
@@ -234,8 +234,8 @@ def update(hutil):
 
     # 1. Check if node-problem-detector is installed
     code, str_ret = RunGetOutput("echo $(dpkg-query -W -f='${Status}' node-problem-detector 2>/dev/null | grep -c 'ok installed')")
-    if code != 0 and str_ret != 0:
-        raise Exception("node-problem-detector not installed.")
+    if code == 0 and str_ret == 0:
+        raise Exception("Node Problem Detector not installed.")
     else:
         hutil.log("Node Problem Detector verified to be installed")
 
