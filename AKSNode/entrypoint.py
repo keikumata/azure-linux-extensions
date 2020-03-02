@@ -167,26 +167,22 @@ def enable(hutil):
     if code != 0:
         raise Exception("Node Problem Detector enable was not successful")
     else:
-        code, str_ret = RunGetOutput("systemctl is-enabled node-problem-detector")
+        code, _ = RunGetOutput("systemctl is-enabled node-problem-detector")
         if code != 0:
-            raise Exception("Could not check whether Node Problem Detector is enabled.")
-        elif str_ret != "enabled":
-            raise Exception("Tried to start Node Problem Detector but is still disabled.")
+            raise Exception("Tried to enable Node Problem Detector but is still disabled, or command failed")
         else:
-            hutil.log("Node Problem Detector enable was successful")
+            hutil.log("Node Problem Detector was successfully enabled")
 
     # 4. Daemon Start
     code, _ = RunGetOutput("systemctl start node-problem-detector.service")
     if code != 0:
         raise Exception("Node Problem Detector start was not successful")
     else:
-        code, str_ret = RunGetOutput("systemctl is-active node-problem-detector")
+        code, _ = RunGetOutput("systemctl is-active node-problem-detector")
         if code != 0:
-            raise Exception("Could not check whether Node Problem Detector is active.")
-        elif str_ret != "active":
-            raise Exception("Tried to start Node Problem Detector but is still inactive.")
+            raise Exception("Tried to start Node Problem Detector but is still inactive, or command failed.")
         else:
-            hutil.log("Node Problem Detector start was successful")
+            hutil.log("Node Problem Detector resstart was successful")
 
 
 
@@ -210,11 +206,9 @@ def disable(hutil):
     if code != 0:
         raise Exception("Node Problem Detector could not be stopped.")
     else:
-        code, str_ret = RunGetOutput("systemctl is-active node-problem-detector")
-        if code != 0:
-            raise Exception("Could not check whether Node Problem Detector is active.")
-        elif str_ret != "inactive":
-            raise Exception("Tried to stop Node Problem Detector but is still active.")
+        code, _ = RunGetOutput("systemctl is-active node-problem-detector", False)
+        if code != 3:
+            raise Exception("Tried to stop Node Problem Detector but is still active, or command failed")
         else:
             hutil.log("Node Problem Detector was successfully stopped")
     
@@ -223,11 +217,9 @@ def disable(hutil):
     if code != 0:
         raise Exception("Node Problem Detector could not be disabled.")
     else:
-        code, str_ret = RunGetOutput("systemctl is-enabled node-problem-detector")
-        if code != 0:
-            raise Exception("Could not check whether Node Problem Detector is enabled.")
-        elif str_ret != "disabled":
-            raise Exception("Tried to disable Node Problem Detector but is still enabled.")
+        code, _ = RunGetOutput("systemctl is-enabled node-problem-detector", False)
+        if code != 3:
+            raise Exception("Tried to disable Node Problem Detector but is still enabled, or command failed")
         else:
             hutil.log("Node Problem Detector was successfully disabled")
 
@@ -289,9 +281,7 @@ def update(hutil):
     else:
         code, str_ret = RunGetOutput("systemctl is-active node-problem-detector")
         if code != 0:
-            raise Exception("Could not check whether Node Problem Detector is active.")
-        elif str_ret != "active":
-            raise Exception("Tried to start Node Problem Detector but is still inactive.")
+            raise Exception("Tried to start Node Problem Detector but is still inactive, or command failed.")
         else:
             hutil.log("Node Problem Detector resstart was successful")
 
