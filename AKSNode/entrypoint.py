@@ -155,14 +155,20 @@ def enable(hutil):
     else:
         hutil.log("Node Problem Detector verified to be installed")
 
-    # 2. Daemon Reload
+    # 2. Check if already enabled - if so, just return here
+    code, _ = RunGetOutput("systemctl is-enabled node-problem-detector")
+    if code == 0:
+        hutil.log("Node Problem Detector is already enabled")
+        return
+
+    # 3. Daemon Reload
     code, _ = RunGetOutput("systemctl daemon-reload")
     if code != 0:
         raise Exception("Systemctl daemon-reload was not successful")
     else:
         hutil.log("Systemctl daemon-reload was successful")
 
-    # 3. Daemon Enable
+    # 4. Daemon Enable
     code, _ = RunGetOutput("systemctl enable node-problem-detector.service")
     if code != 0:
         raise Exception("Node Problem Detector enable was not successful")
@@ -173,7 +179,7 @@ def enable(hutil):
         else:
             hutil.log("Node Problem Detector was successfully enabled")
 
-    # 4. Daemon Start
+    # 5. Daemon Start
     code, _ = RunGetOutput("systemctl start node-problem-detector.service")
     if code != 0:
         raise Exception("Node Problem Detector start was not successful")
@@ -201,7 +207,15 @@ def disable(hutil):
     else:
         hutil.log("Node Problem Detector verified to be installed")
     
-    # 2. Stop node problem detector
+    # 2. Check if already disabled and inactive - if so, just return here
+    code, _ = RunGetOutput("systemctl is-enabled node-problem-detector", False)
+    if code != 1:
+        code, _ = RunGetOutput("systemctl is-active node-problem-detector", False)
+        if code != 3:
+            hutil.log("Node Problem Detector is already stopped and disabled")
+            return
+
+    # 3. Stop node problem detector
     code, _ = RunGetOutput("systemctl stop node-problem-detector")
     if code != 0:
         raise Exception("Node Problem Detector could not be stopped.")
@@ -212,7 +226,7 @@ def disable(hutil):
         else:
             hutil.log("Node Problem Detector was successfully stopped")
     
-    # 3. Disable node problem detector
+    # 4. Disable node problem detector
     code, _ = RunGetOutput("systemctl disable node-problem-detector")
     if code != 0:
         raise Exception("Node Problem Detector could not be disabled.")
