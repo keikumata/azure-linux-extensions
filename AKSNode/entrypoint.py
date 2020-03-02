@@ -154,31 +154,88 @@ def enable(hutil):
         raise Exception("node-problem-detector not installed.")
     else:
         hutil.log("Node Problem Detector verified to be installed")
+
     # 2. Daemon Reload
     code, _ = RunGetOutput("systemctl daemon-reload")
     if code != 0:
         raise Exception("Systemctl daemon-reload was not successful")
     else:
         hutil.log("Systemctl daemon-reload was successful")
+
     # 3. Daemon Enable
     code, _ = RunGetOutput("systemctl enable node-problem-detector.service")
     if code != 0:
         raise Exception("Node Problem Detector enable was not successful")
     else:
-        hutil.log("Node Problem Detector enable was successful")
+        code, str_ret = RunGetOutput("systemctl is-enabled node-problem-detector")
+        if code != 0:
+            raise Exception("Could not check whether Node Problem Detector is enabled.")
+        elif str_ret != "enabled":
+            raise Exception("Tried to start Node Problem Detector but is still disabled.")
+        else:
+            hutil.log("Node Problem Detector enable was successful")
+
     # 4. Daemon Start
     code, _ = RunGetOutput("systemctl start node-problem-detector.service")
     if code != 0:
         raise Exception("Node Problem Detector start was not successful")
     else:
-        hutil.log("Node Problem Detector start was successful")
+        code, str_ret = RunGetOutput("systemctl is-active node-problem-detector")
+        if code != 0:
+            raise Exception("Could not check whether Node Problem Detector is active.")
+        elif str_ret != "active":
+            raise Exception("Tried to start Node Problem Detector but is still inactive.")
+        else:
+            hutil.log("Node Problem Detector start was successful")
 
 
 
 def disable(hutil):
     """
     Ensure the same configuration is executed only once
-    If the previous enable failed, we do not have retry logic here,
+    If the previous disable failed, we do not have retry logic here,
+    since the custom script may not work in an intermediate state.
+    """
+    hutil.exit_if_enabled()
+
+    # 1. Check if node problem detector is installed
+    code, str_ret = RunGetOutput("echo $(dpkg-query -W -f='${Status}' node-problem-detector 2>/dev/null | grep -c 'ok installed')")
+    if code != 0 and str_ret != 0:
+        raise Exception("Node Problem Detector not installed.")
+    else:
+        hutil.log("Node Problem Detector verified to be installed")
+    
+    # 2. Stop node problem detector
+    code, _ = RunGetOutput("systemctl stop node-problem-detector")
+    if code != 0:
+        raise Exception("Node Problem Detector could not be stopped.")
+    else:
+        code, str_ret = RunGetOutput("systemctl is-active node-problem-detector")
+        if code != 0:
+            raise Exception("Could not check whether Node Problem Detector is active.")
+        elif str_ret != "inactive":
+            raise Exception("Tried to stop Node Problem Detector but is still active.")
+        else:
+            hutil.log("Node Problem Detector was successfully stopped")
+    
+    # 3. Disable node problem detector
+    code, _ = RunGetOutput("systemctl disable node-problem-detector")
+    if code != 0:
+        raise Exception("Node Problem Detector could not be disabled.")
+    else:
+        code, str_ret = RunGetOutput("systemctl is-enabled node-problem-detector")
+        if code != 0:
+            raise Exception("Could not check whether Node Problem Detector is enabled.")
+        elif str_ret != "disabled":
+            raise Exception("Tried to disable Node Problem Detector but is still enabled.")
+        else:
+            hutil.log("Node Problem Detector was successfully disabled")
+
+
+def update(hutil):
+    """
+    Ensure the same configuration is executed only once
+    If the previous update failed, we do not have retry logic here,
     since the custom script may not work in an intermediate state.
     """
     hutil.exit_if_enabled()
@@ -189,30 +246,60 @@ def disable(hutil):
         raise Exception("node-problem-detector not installed.")
     else:
         hutil.log("Node Problem Detector verified to be installed")
-    # 2. Enable node problem detector
-    code, _ = RunGetOutput("systemctl disable node-problem-detector")
+
+    # 2. Upgrade the node problem detector
+    code, _ = RunGetOutput("dpkg -i deb/node-problem-detector/*.deb")
     if code != 0:
-        raise Exception("node-problem-detector could not be disabled.")
+        raise Exception("Installing node-problem-detector failed.")
     else:
-        hutil.log("Node Problem Detector was disabled")
+        hutil.log("Node Problem Detector successfully installed")
 
+    # 3. Copy over new custom configurations from config folder into /etc/node-problem.detector.d
+    code, _ = RunGetOutput("cp -TRv config/node-problem-detector/ /etc/node-problem-detector.d/")
+    if code != 0:
+        raise Exception("Copying node-problem-detector configs to systemd config folder failed.")
+    else:
+        hutil.log("Node Problem Detector configurations copied over")
 
-def update(hutil):
-    """
-    Ensure the same configuration is executed only once
-    If the previous enable failed, we do not have retry logic here,
-    since the custom script may not work in an intermediate state.
-    """
-    hutil.exit_if_enabled()
+    # 4. Ensure all custom plugin scripts are executable
+    code, _ = RunGetOutput("chmod +x /etc/node-problem-detector.d/plugin/*")
+    if code != 0:
+        raise Exception("Applying chmod to custom plugin scripts failed")
+    else:
+        hutil.log("Node Problem Detector custom plugins are executable")
 
-    # Check if node-problem-detector is installed
-    # Update version
+    # 5. Daemon Reload
+    code, _ = RunGetOutput("systemctl daemon-reload")
+    if code != 0:
+        raise Exception("Systemctl daemon-reload was not successful")
+    else:
+        hutil.log("Systemctl daemon-reload was successful")
+
+    # 6. Daemon Reenable
+    code, _ = RunGetOutput("systemctl reenable node-problem-detector.service")
+    if code != 0:
+        raise Exception("Systemctl reenable was not successful")
+    else:
+        hutil.log("Systemctl reenable was successful")
+
+    # 6. Daemon Restart
+    code, _ = RunGetOutput("systemctl restart node-problem-detector.service")
+    if code != 0:
+        raise Exception("Node Problem Detector restart was not successful")
+    else:
+        code, str_ret = RunGetOutput("systemctl is-active node-problem-detector")
+        if code != 0:
+            raise Exception("Could not check whether Node Problem Detector is active.")
+        elif str_ret != "active":
+            raise Exception("Tried to start Node Problem Detector but is still inactive.")
+        else:
+            hutil.log("Node Problem Detector resstart was successful")
 
 
 def uninstall(hutil):
     """
     Ensure the same configuration is executed only once
-    If the previous enable failed, we do not have retry logic here,
+    If the previous uninstall failed, we do not have retry logic here,
     since the custom script may not work in an intermediate state.
     """
     hutil.exit_if_enabled()
