@@ -101,9 +101,9 @@ def install(hutil):
     
     # 1. Check if node problem detector is installed and if so, remove it
     code, str_ret = RunGetOutput("echo $(dpkg-query -W -f='${Status}' node-problem-detector 2>/dev/null | grep -c 'ok installed')")
-    if code == 0 and str_ret != 0:
+    if code == 0 and str_ret != "0":
         hutil.log("Node Problem Detector already installed")
-        code, str_ret = RunGetOutput("dpkg --remove node-problem-detector")
+        code, str_ret = RunGetOutput("dpkg --purge node-problem-detector")
         if code != 0:
             raise Exception("Removing node-problem-detector for re-installation failed.")
         else:
@@ -150,7 +150,7 @@ def enable(hutil):
 
     # 1. Check if node-problem-detector is installed
     code, str_ret = RunGetOutput("echo $(dpkg-query -W -f='${Status}' node-problem-detector 2>/dev/null | grep -c 'ok installed')")
-    if code == 0 and str_ret == 0:
+    if code == 0 and str_ret == "0":
         raise Exception("Node Problem Detector not installed.")
     else:
         hutil.log("Node Problem Detector verified to be installed")
@@ -196,7 +196,7 @@ def disable(hutil):
 
     # 1. Check if node problem detector is installed
     code, str_ret = RunGetOutput("echo $(dpkg-query -W -f='${Status}' node-problem-detector 2>/dev/null | grep -c 'ok installed')")
-    if code == 0 and str_ret == 0:
+    if code == 0 and str_ret == "0":
         raise Exception("Node Problem Detector not installed.")
     else:
         hutil.log("Node Problem Detector verified to be installed")
@@ -234,7 +234,7 @@ def update(hutil):
 
     # 1. Check if node-problem-detector is installed
     code, str_ret = RunGetOutput("echo $(dpkg-query -W -f='${Status}' node-problem-detector 2>/dev/null | grep -c 'ok installed')")
-    if code == 0 and str_ret == 0:
+    if code == 0 and str_ret == "0":
         raise Exception("Node Problem Detector not installed.")
     else:
         hutil.log("Node Problem Detector verified to be installed")
@@ -242,9 +242,9 @@ def update(hutil):
     # 2. Upgrade the node problem detector
     code, _ = RunGetOutput("dpkg -i deb/node-problem-detector/*.deb")
     if code != 0:
-        raise Exception("Installing node-problem-detector failed.")
+        raise Exception("Upgrading node-problem-detector failed.")
     else:
-        hutil.log("Node Problem Detector successfully installed")
+        hutil.log("Node Problem Detector successfully upgraded")
 
     # 3. Copy over new custom configurations from config folder into /etc/node-problem.detector.d
     code, _ = RunGetOutput("cp -TRv config/node-problem-detector/ /etc/node-problem-detector.d/")
@@ -296,7 +296,7 @@ def uninstall(hutil):
 
     # 1. Check if node-problem-detector is installed
     code, str_ret = RunGetOutput("echo $(dpkg-query -W -f='${Status}' node-problem-detector 2>/dev/null | grep -c 'ok installed')")
-    if code == 0 and str_ret == 0:
+    if code == 0 and str_ret == "0":
         raise Exception("Node Problem Detector not installed.")
     else:
         hutil.log("Node Problem Detector verified to be installed")
@@ -314,7 +314,7 @@ def uninstall(hutil):
         raise Exception("Node Problem Detector could not be uninstalled.")
     else:
         code, str_ret = RunGetOutput("echo $(dpkg-query -W -f='${Status}' node-problem-detector 2>/dev/null | grep -c 'ok installed')")
-        if code == 0 and str_ret != 0:
+        if code == 0 and str_ret != "0":
             raise Exception("Node Problem Detector still installed.")
         else:
             hutil.log("Node Problem Detector successfully uninstalled")
