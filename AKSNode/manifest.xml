@@ -5,12 +5,12 @@
   <Version>1.0.0</Version>
   <Label>AKS Extension for Linux Kubernetes Worker Nodes</Label>
   <HostingResources>VmRole</HostingResources>
-  <MediaLink></MediaLink>
-  <Description>Please consider using Microsoft.Azure.Extensions.CustomScript instead.</Description>
+  <MediaLink>https://akskeiyoshi.blob.core.windows.net/extension/AKSNodeVMExtension.zip</MediaLink>
+  <Description>Additional installations for AKS nodes</Description>
   <IsInternalExtension>true</IsInternalExtension>
   <Eula>https://github.com/Azure/azure-linux-extensions/blob/master/LICENSE-2_0.txt</Eula>
   <PrivacyUri>http://www.microsoft.com/privacystatement/en-us/OnlineServices/Default.aspx</PrivacyUri>
-  <HomepageUri>https://github.com/Azure/azure-linux-extensions</HomepageUri>
+  <HomepageUri>https://github.com/Azure/AKS</HomepageUri>
   <IsJsonExtension>true</IsJsonExtension>
   <SupportedOS>Linux</SupportedOS>
   <CompanyName>Microsoft</CompanyName>

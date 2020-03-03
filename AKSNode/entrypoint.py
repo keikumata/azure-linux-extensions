@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# CustomScript extension
+# Compute.AKS.Linux.AKSNode extension
 #
 # Copyright 2014 Microsoft Corporation
 #

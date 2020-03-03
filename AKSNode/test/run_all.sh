@@ -23,5 +23,8 @@ cd $root
 root=`pwd`
 
 echo "Run unit test:"
-ls test_*.py
-ls test_*.py | sed -e 's/\.py//'|xargs python -m unittest
+python test_install.py
+python test_enable.py
+python test_update.py
+python test_disable.py
+python test_uninstall.py
